@@ -91,6 +91,7 @@ erDiagram
     %% USUARIO ||--|{ VISUALIZACION : "realiza"
     %% PELICULA ||--|{ VISUALIZACION : "es vista en"
 ```
+
 **Explicación:**
 *   Tenemos tres entidades principales: `USUARIO`, `PELICULA` y `GENERO`.
 *   Una película puede tener varios géneros, y un género puede agrupar varias películas. Para modelar esta relación de **muchos a muchos**, usamos una tabla intermedia (o entidad de enlace) llamada `PELICULA_GENERO`.
@@ -135,6 +136,7 @@ classDiagram
     Usuario "1" -- "0..*" Pelicula : "ve >"
     Pelicula "*" -- "*" Genero : "pertenece a >"
 ```
+
 **Explicación:**
 *   Las clases `Usuario`, `Pelicula` y `Genero` reflejan nuestras entidades.
 *   Hemos añadido métodos que definen lo que cada objeto puede hacer, como `login()` en `Usuario` o `reproducir()` en `Pelicula`.
@@ -151,6 +153,35 @@ graph TD
     A -->|Datos de Login| B
     B -->|Confirmación de Acceso| A
 ```
+
 **Explicación:**
 *   El `Usuario` (entidad externa) interactúa con el `Sistema de Streaming` (nuestro proceso principal).
 *   Los flujos de datos (`Solicitud de Búsqueda`, `Catálogo de Películas`, etc.) muestran la información que se intercambia entre ellos.
+
+---
+
+## 🛠️ Fase de Desarrollo e Implementación
+
+Una vez completado el diseño de ingeniería, procedemos a la construcción del software utilizando **Python** y el framework **Flask**.
+
+### 1. Configuración del Entorno
+Para asegurar que el proyecto sea reproducible, utilizamos un **Entorno Virtual (VENV)**. Esto aísla nuestras dependencias y evita conflictos con el sistema.
+
+> [!IMPORTANT]
+> Puedes consultar los pasos detallados de instalación aquí:
+> 👉 **[Guía de Inicio: Entorno Virtual y Flask](GUIA_INICIO.md)**
+
+### 2. De los Modelos al Código
+La implementación actual refleja el diseño UML y MER:
+*   Las **clases** y **entidades** se gestionan en las rutas de Flask.
+*   El **flujo de datos** se visualiza a través de las plantillas HTML en `/templates`.
+*   El **catálogo** dinámico consume datos estructurados similares a los definidos en el MER.
+
+### 3. Ejecución del Proyecto
+Para ver la aplicación en funcionamiento:
+1. Activa tu entorno virtual.
+2. Ejecuta `python app.py`.
+3. Abre tu navegador en `http://127.0.0.1:5000`.
+
+---
+© 2026 - Proyecto de Ingeniería y Desarrollo Web

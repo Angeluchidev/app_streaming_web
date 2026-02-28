@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - StreamFlow{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-secondary rounded-3">
+    <div class="container-fluid py-5 text-center">
+        <h1 class="display-4 fw-bold">Bienvenido a StreamFlow</h1>
+        <p class="col-md-12 fs-4">La plataforma de streaming creada paso a paso para aprender Flask.</p>
+        <a href="/catalogo" class="btn btn-primary btn-lg px-4 gap-3">Explorar Catálogo</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h3>🚀 Rápido</h3>
+        <p>Flask es ligero y eficiente para servicios de streaming.</p>
+    </div>
+    <div class="col-md-4">
+        <h3>🎨 Visual</h3>
+        <p>Utilizamos Bootstrap para que se vea profesional desde el inicio.</p>
+    </div>
+    <div class="col-md-4">
+        <h3>📚 Educativo</h3>
+        <p>Documentación clara en cada línea de código.</p>
+    </div>
+</div>
+{% endblock %}

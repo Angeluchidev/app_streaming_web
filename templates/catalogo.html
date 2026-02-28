@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo - StreamFlow{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-primary">🎥 Catálogo de Contenidos</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for v in videos %}
+    <div class="col">
+        <div class="card bg-secondary text-white h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title fw-bold text-info">{{ v.titulo }}</h5>
+                <p class="card-text"><small class="text-light">Categoría: {{ v.categoria }}</small></p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 d-grid">
+                <button class="btn btn-outline-info">▶ Ver Ahora</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -10,7 +10,10 @@ En la ingeniería de software, los modelos nos permiten visualizar, entender y c
 
 ### 1.1. Diagramas de Flujo de Datos (DFD)
 
-Un **Diagrama de Flujo de Datos (DFD)** se centra en el flujo de la información a través de un sistema. Muestra de dónde vienen los datos, a dónde van, y cómo se procesan y almacenan. No se preocupa por la lógica de control (bucles, condiciones), sino por el movimiento de los datos.
+Un **Diagrama de Flujo de Datos (DFD)** se centra en el flujo de la información a través de un sistema. Muestra de dónde vienen los datos, a dónde van, y cómo se procesan y almacenan.
+
+> [!TIP]
+> **[👉 Guía Detallada de DFD: Nivel 0 (Contexto) y Nivel 1 (Procesos)](DOCUMENTACION_DFD.md)**
 
 **Componentes Principales:**
 *   **Entidades Externas:** Actores que interactúan con el sistema enviando o recibiendo datos (ej. un Usuario).
@@ -148,21 +151,8 @@ classDiagram
 *   Hemos añadido métodos que definen lo que cada objeto puede hacer, como `login()` en `Usuario` o `reproducir()` en `Pelicula`.
 *   La clase `RepositorioPeliculas` es un ejemplo de un patrón de diseño que se encarga de la lógica de acceso a los datos de las películas.
 
-### 3.4. Diagrama de Flujo de Datos (DFD) - Nivel 0 (Contexto)
+---
 
-Este es el diagrama más simple y de más alto nivel. Muestra el sistema como un único proceso y su interacción con el exterior.
-
-```mermaid
-graph TD
-    A[Usuario] -->|Solicitud de Búsqueda de Película| B(Sistema de Streaming)
-    B -->|Catálogo de Películas| A
-    A -->|Datos de Login| B
-    B -->|Confirmación de Acceso| A
-```
-
-**Explicación:**
-*   El `Usuario` (entidad externa) interactúa con el `Sistema de Streaming` (nuestro proceso principal).
-*   Los flujos de datos (`Solicitud de Búsqueda`, `Catálogo de Películas`, etc.) muestran la información que se intercambia entre ellos.
 
 ---
 

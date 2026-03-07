@@ -22,6 +22,9 @@ Un **Diagrama de Flujo de Datos (DFD)** se centra en el flujo de la información
 
 El **Lenguaje Unificado de Modelado (UML)** es un estándar para el modelado de sistemas de software que abarca mucho más que solo el flujo de datos. Proporciona una serie de diagramas para describir el sistema desde diferentes perspectivas (estructural y de comportamiento).
 
+> [!TIP]
+> **[👉 Ampliar conceptos de UML (Actores, Procesos y Diagramas)](DOCUMENTACION_UML.md)**
+
 **Diagramas Clave:**
 *   **Diagrama de Casos de Uso:** Describe la funcionalidad del sistema desde el punto de vista del usuario (actor). Responde a la pregunta: ¿qué puede hacer el sistema?
 *   **Diagrama de Clases:** Muestra la estructura estática del sistema: sus clases, atributos, métodos y las relaciones entre ellas. Es el plano de la arquitectura del código.

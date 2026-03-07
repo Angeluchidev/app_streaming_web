@@ -34,6 +34,9 @@ El **Lenguaje Unificado de Modelado (UML)** es un estándar para el modelado de 
 
 El **Modelo Entidad-Relación (MER o ERD por sus siglas en inglés)** es un tipo de diagrama de flujo que ilustra cómo las "entidades", como personas, objetos o conceptos, se relacionan entre sí dentro de un sistema. Se utiliza principalmente para el diseño de bases de datos.
 
+> [!TIP]
+> **[👉 Guía de Diseño de BD: Normalización (1NF, 2NF, 3NF) y Conceptos Clave](DOCUMENTACION_BD.md)**
+
 **Componentes Principales:**
 *   **Entidades:** Representan objetos del mundo real sobre los que queremos almacenar información (ej. `Usuario`, `Pelicula`).
 *   **Atributos:** Las propiedades o características de una entidad (ej. el `nombre` de un `Usuario`).

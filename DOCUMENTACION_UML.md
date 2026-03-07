@@ -20,20 +20,22 @@ Representan las funcionalidades del sistema desde la perspectiva del usuario. De
 Ideal para definir el alcance del sistema.
 
 ```mermaid
-useCaseDiagram
-    actor "Usuario" as U
-    actor "Administrador" as A
-    package "Sistema de Streaming" {
-        usecase "Buscar Película" as UC1
-        usecase "Ver Video" as UC2
-        usecase "Gestionar Catálogo" as UC3
-        usecase "Iniciar Sesión" as UC4
-    }
-    U --> UC1
-    U --> UC2
-    U --> UC4
-    A --> UC3
-    A --> UC4
+graph LR
+    U[Usuario]
+    A[Administrador]
+    
+    subgraph "Sistema de Streaming"
+        UC1(Buscar Película)
+        UC2(Ver Video)
+        UC3(Gestionar Catálogo)
+        UC4(Iniciar Sesión)
+    end
+    
+    U --- UC1
+    U --- UC2
+    U --- UC4
+    A --- UC3
+    A --- UC4
 ```
 
 ### 2.2. Diagrama de Secuencia

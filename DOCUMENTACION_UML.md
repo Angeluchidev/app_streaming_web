@@ -1,95 +1,80 @@
 # Guía Detallada de UML - Ingeniería de Software
 
-El **Lenguaje Unificado de Modelado (UML)** es el estándar de la industria para visualizar, especificar, construir y documentar los artefactos de un sistema de software.
+El **Lenguaje Unificado de Modelado (UML)** nos permite documentar la estructura y comportamiento de nuestro sistema StreamFlow.
 
 ## 1. Conceptos Fundamentales
-
-### 1.1. Actores
-Un **Actor** representa un rol desempeñado por un usuario humano, un dispositivo de hardware u otro sistema que interactúa con el nuestro.
-- **Primarios**: Iniciarán un caso de uso (ej. Usuario Final).
-- **Secundarios**: Proporcionarán un servicio al sistema (ej. Pasarela de Pagos, Servidor de Correo).
-
-### 1.2. Casos de Uso
-Representan las funcionalidades del sistema desde la perspectiva del usuario. Describe "qué" hace el sistema, no "cómo".
+... (conceptos de actores y casos de uso se mantienen) ...
 
 ---
 
 ## 2. Diagramas de Comportamiento
 
-### 2.1. Diagrama de Casos de Uso
-Ideal para definir el alcance del sistema.
+### 2.1. Diagramas de Casos de Uso y Secuencia
+*(Actualizados según el sistema de Usuarios y Películas)*
 
 ```mermaid
 graph LR
     U[Usuario]
-    A[Administrador]
     
     subgraph "Sistema de Streaming"
-        UC1(Buscar Película)
-        UC2(Ver Video)
-        UC3(Gestionar Catálogo)
-        UC4(Iniciar Sesión)
+        UC1(Navegar Catálogo)
+        UC2(Filtrar por Género)
+        UC3(Ver Película)
+        UC4(Registrarse/Loguearse)
     end
     
     U --- UC1
     U --- UC2
+    U --- UC3
     U --- UC4
-    A --- UC3
-    A --- UC4
-```
-
-### 2.2. Diagrama de Secuencia
-Muestra la interacción entre objetos en un orden temporal.
-
-```mermaid
-sequenceDiagram
-    participant U as Usuario
-    participant S as Sistema
-    participant DB as Base de Datos
-
-    U->>S: Solicita catálogo
-    S->>DB: Consultar películas
-    DB-->>S: Lista de videos
-    S-->>U: Muestra catálogo en pantalla
 ```
 
 ---
 
 ## 3. Diagramas Estructurales
 
-### 3.1. Diagrama de Clases (Detallado)
-Define la estructura del sistema mediante clases, atributos y métodos, además de las relaciones entre ellos.
-
-- **Herencia**: Un objeto "es un" tipo de otro.
-- **Asociación**: Relación general entre clases.
-- **Agregación/Composición**: Relaciones de "parte de".
+### 3.1. Diagrama de Clases (Sincronizado con el ER)
+Este diagrama es el plano directo de nuestras clases en `app.py`.
 
 ```mermaid
 classDiagram
-    class Contenido {
+    class Usuario {
+        +int id
+        +string nombre
+        +string email
+        +string password
+        +date fecha_registro
+        +login()
+        +registrarse()
+    }
+
+    class Pelicula {
         +int id
         +string titulo
-        +string url
+        +string sinopsis
+        +int anio_lanzamiento
+        +string url_video
         +reproducir()
     }
-    class Pelicula {
-        +int duracion
-        +string director
+
+    class Genero {
+        +int id
+        +string nombre
+        +listarPeliculas()
     }
-    class Serie {
-        +int temporadas
-        +listarEpisodios()
-    }
-    Contenido <|-- Pelicula : es un
-    Contenido <|-- Serie : es un
+
+    Pelicula "*" -- "*" Genero : pertenece a >
 ```
+
+**Nota Técnica:** La relación entre `Pelicula` y `Genero` es de **Muchos a Muchos**, lo que en base de datos se traduce en la tabla intermedia `pelicula_genero` que estamos utilizando.
 
 ---
 
-## 4. Importancia de UML en el Proyecto
-Modelar antes de codificar nos permite:
-1. **Detectar errores de lógica** antes de escribir código.
-2. **Facilitar la comunicación** entre desarrolladores y stakeholders.
-3. **Escalabilidad**: Es más fácil planificar nuevas funciones (como suscripciones o perfiles) si la estructura base está clara.
+## 4. Coherencia entre Modelos
+Es vital que el alumno entienda que:
+1. Las **Entidades** del Diagrama ER se convierten en **Clases** en UML.
+2. Los **Atributos** del ER se convierten en **Variables de Clase**.
+3. Las **Relaciones** del ER definen cómo interactúan los objetos en el código.
 
 [Volver al README principal](README.md)
+

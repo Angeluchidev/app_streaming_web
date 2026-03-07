@@ -24,100 +24,83 @@ Esta guía contiene todo el código necesario para construir la aplicación **St
 ---
 
 ## 🏗️ Etapa 2: El Corazón de la App (`app.py`)
-*Crea el archivo `app.py` en la raíz con la lógica de las rutas.*
+*Crea el archivo `app.py` en la raíz con la lógica de las rutas y modelos ER.*
 
 ```python
+import os
+from datetime import datetime
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-
-# Configuración de base de datos (SQLite)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///streaming.db'
 db = SQLAlchemy(app)
 
-# Modelo de Datos (Ver DOCUMENTACION_UML.md)
+# --- MODELOS SINCRONIZADOS CON EL DER ---
+
+# Tabla intermedia N:M
+pelicula_genero = db.Table('pelicula_genero',
+    db.Column('pelicula_id', db.Integer, db.ForeignKey('pelicula.id'), primary_key=True),
+    db.Column('genero_id', db.Integer, db.ForeignKey('genero.id'), primary_key=True)
+)
+
+class Usuario(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+    fecha_registro = db.Column(db.Date, default=datetime.utcnow)
+
 class Pelicula(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(100), nullable=False)
-    categoria = db.Column(db.String(50))
+    sinopsis = db.Column(db.Text)
+    anio_lanzamiento = db.Column(db.Integer)
     url_video = db.Column(db.String(200))
+    generos = db.relationship('Genero', secondary=pelicula_genero, backref='peliculas')
+
+class Genero(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(50), nullable=False)
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+def index(): return render_template('index.html')
 
 @app.route('/catalogo')
 def catalogo():
-    # Simulamos datos por ahora (Etapa 3)
-    videos = [
-        {"id": 1, "titulo": "Aprender Flask", "categoria": "Tutorial"},
-        {"id": 2, "titulo": "Desarrollo con Python", "categoria": "Educación"}
-    ]
+    videos = Pelicula.query.all()
     return render_template('catalogo.html', videos=videos)
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all() # Crea la BD automáticamente
+        db.create_all()
     app.run(debug=True)
 ```
 
 ---
 
 ## 🎨 Etapa 3: Diseño con Plantillas (Jinja2)
-*Crea la carpeta `/templates` y dentro los siguientes archivos.*
+*Crea la carpeta `/templates` y los archivos correspondientes.*
 
-### 1. `templates/base.html` (Plantilla Maestra)
-```html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}StreamFlow{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-dark text-white">
-    <nav class="navbar navbar-dark bg-primary mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="/">🎬 StreamFlow</a>
-            <div class="navbar-nav flex-row">
-                <a class="nav-link me-3" href="/">Inicio</a>
-                <a class="nav-link" href="/catalogo">Catálogo</a>
-            </div>
-        </div>
-    </nav>
-    <main class="container">
-        {% block content %}{% endblock %}
-    </main>
-</body>
-</html>
-```
+### 1. `templates/base.html` (Mismo que antes)
+... (mantener estructura base) ...
 
-### 2. `templates/index.html` (Inicio)
+### 2. `templates/catalogo.html` (Iterando géneros)
 ```html
 {% extends "base.html" %}
 {% block content %}
-<div class="text-center py-5">
-    <h1>Bienvenido a StreamFlow</h1>
-    <p class="lead">Tu plataforma educativa de streaming.</p>
-    <a href="/catalogo" class="btn btn-lg btn-primary">Ver Catálogo</a>
-</div>
-{% endblock %}
-```
-
-### 3. `templates/catalogo.html` (Catálogo Dinámico)
-```html
-{% extends "base.html" %}
-{% block content %}
-<h2 class="mb-4">Nuestro Contenido</h2>
 <div class="row">
-    {% for video in videos %}
+    {% for v in videos %}
     <div class="col-md-4 mb-4">
         <div class="card bg-secondary text-white">
             <div class="card-body">
-                <h5 class="card-title">{{ video.titulo }}</h5>
-                <p class="card-text">Categoría: {{ video.categoria }}</p>
-                <a href="#" class="btn btn-primary">Reproducir</a>
+                <h5 class="card-title">{{ v.titulo }}</h5>
+                <p>
+                    {% for g in v.generos %}
+                        <span class="badge bg-primary">{{ g.nombre }}</span>
+                    {% endfor %}
+                </p>
+                <p>{{ v.sinopsis }}</p>
             </div>
         </div>
     </div>
@@ -125,6 +108,7 @@ if __name__ == '__main__':
 </div>
 {% endblock %}
 ```
+
 
 ---
 

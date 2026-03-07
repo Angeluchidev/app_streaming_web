@@ -10,7 +10,17 @@
         <div class="card bg-secondary text-white h-100 shadow-sm border-0">
             <div class="card-body">
                 <h5 class="card-title fw-bold text-info">{{ v.titulo }}</h5>
-                <p class="card-text"><small class="text-light">Categoría: {{ v.categoria }}</small></p>
+                <!-- Relación Muchos a Muchos (Géneros) -->
+                <p class="card-text mb-1">
+                    <small class="text-light">
+                        Géneros: 
+                        {% for g in v.generos %}
+                            <span class="badge bg-dark">{{ g.nombre }}</span>
+                        {% endfor %}
+                    </small>
+                </p>
+                <p class="card-text mb-1"><small class="text-light">Año: {{ v.anio_lanzamiento }}</small></p>
+                <p class="card-text"><small class="text-white-50">{{ v.sinopsis }}</small></p>
             </div>
             <div class="card-footer bg-transparent border-top-0 d-grid">
                 <button class="btn btn-outline-info">▶ Ver Ahora</button>
@@ -20,3 +30,4 @@
     {% endfor %}
 </div>
 {% endblock %}
+

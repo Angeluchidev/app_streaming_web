@@ -1,95 +1,140 @@
-# 🧪 Guía de Laboratorio: Desarrollo de App Streaming con Flask
+# 🧪 Guía de Laboratorio: Desarrollo de App Streaming (Paso a Paso)
 
-Esta guía está diseñada para que los alumnos sigan un proceso ordenado de ingeniería y desarrollo para construir la aplicación **StreamFlow**.
+Esta guía contiene todo el código necesario para construir la aplicación **StreamFlow**. Sigue cada etapa cuidadosamente.
 
 ---
 
-## 📅 Etapa 1: Configuración del Entorno de Desarrollo
-*Objetivo: Preparar el espacio de trabajo y las herramientas básicas.*
+## 📅 Etapa 1: Preparación del Entorno
+*Crea la carpeta del proyecto y el entorno aislado.*
 
-1.  **Crear carpeta del proyecto:** Crea una carpeta llamada `app_streaming_web`.
-2.  **Crear Entorno Virtual (VENV):**
+1.  **Comandos de Consola:**
     ```bash
+    # Crear carpeta e ingresar
+    mkdir app_streaming_web
+    cd app_streaming_web
+
+    # Crear y activar entorno virtual (Windows)
     python -m venv venv
+    .\venv\Scripts\activate
+
+    # Instalar dependencias iniciales
+    pip install flask flask-sqlalchemy
     ```
-3.  **Activar Entorno Virtual:**
-    - **Windows:** `.\venv\Scripts\activate`
-    - **Linux/macOS:** `source venv/bin/activate`
-4.  **Instalar Flask:**
+
+---
+
+## 🏗️ Etapa 2: El Corazón de la App (`app.py`)
+*Crea el archivo `app.py` en la raíz con la lógica de las rutas.*
+
+```python
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+
+# Configuración de base de datos (SQLite)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///streaming.db'
+db = SQLAlchemy(app)
+
+# Modelo de Datos (Ver DOCUMENTACION_UML.md)
+class Pelicula(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(100), nullable=False)
+    categoria = db.Column(db.String(50))
+    url_video = db.Column(db.String(200))
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/catalogo')
+def catalogo():
+    # Simulamos datos por ahora (Etapa 3)
+    videos = [
+        {"id": 1, "titulo": "Aprender Flask", "categoria": "Tutorial"},
+        {"id": 2, "titulo": "Desarrollo con Python", "categoria": "Educación"}
+    ]
+    return render_template('catalogo.html', videos=videos)
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all() # Crea la BD automáticamente
+    app.run(debug=True)
+```
+
+---
+
+## 🎨 Etapa 3: Diseño con Plantillas (Jinja2)
+*Crea la carpeta `/templates` y dentro los siguientes archivos.*
+
+### 1. `templates/base.html` (Plantilla Maestra)
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}StreamFlow{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-white">
+    <nav class="navbar navbar-dark bg-primary mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">🎬 StreamFlow</a>
+            <div class="navbar-nav flex-row">
+                <a class="nav-link me-3" href="/">Inicio</a>
+                <a class="nav-link" href="/catalogo">Catálogo</a>
+            </div>
+        </div>
+    </nav>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
+```
+
+### 2. `templates/index.html` (Inicio)
+```html
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center py-5">
+    <h1>Bienvenido a StreamFlow</h1>
+    <p class="lead">Tu plataforma educativa de streaming.</p>
+    <a href="/catalogo" class="btn btn-lg btn-primary">Ver Catálogo</a>
+</div>
+{% endblock %}
+```
+
+### 3. `templates/catalogo.html` (Catálogo Dinámico)
+```html
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Nuestro Contenido</h2>
+<div class="row">
+    {% for video in videos %}
+    <div class="col-md-4 mb-4">
+        <div class="card bg-secondary text-white">
+            <div class="card-body">
+                <h5 class="card-title">{{ video.titulo }}</h5>
+                <p class="card-text">Categoría: {{ video.categoria }}</p>
+                <a href="#" class="btn btn-primary">Reproducir</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+```
+
+---
+
+## 🚀 Etapa 4: Ejecución y Pruebas
+1.  Asegúrate de estar dentro del entorno virtual.
+2.  Ejecuta la aplicación:
     ```bash
-    pip install flask
+    python app.py
     ```
+3.  Abre tu navegador en `http://127.0.0.1:5000`.
 
 ---
-
-## 🏗️ Etapa 2: Estructura Base y Plantilla Maestra (Base.html)
-*Objetivo: Crear el esqueleto de la aplicación y la estructura visual común.*
-
-1.  **Crear Carpetas Necesarias**:
-    - `/templates` (Para los archivos HTML).
-    - `/static/css` (Para los estilos CSS).
-2.  **Crear `base.html` en `/templates`**:
-    - Este archivo contendrá el **diseño global** (Navbar, Footer, enlaces a Bootstrap).
-    - Utiliza el tag `{% block content %}{% endblock %}` donde se inyectarán las demás páginas.
-3.  **Vincular Recursos**: Asegúrate de incluir los links de Bootstrap y tu `style.css` en el `<head>`.
-
-
----
-
-## 🎨 Etapa 3: Creación de Páginas (Vistas HTML)
-*Objetivo: Desarrollar las páginas individuales usando Herencia de Plantillas.*
-
-1.  **Página de Inicio (`index.html`)**:
-    - Crea el archivo dentro de `/templates`.
-    - Usa `{% extends "base.html" %}` al inicio para heredar el diseño.
-    - Coloca el contenido de bienvenida dentro del bloque `{% block content %}`.
-2.  **Página de Catálogo (`catalogo.html`)**:
-    - Crea el archivo y hereda de `base.html`.
-    - Implementa un bucle `{% for video in videos %}` para recorrer la lista enviada desde Python.
-    - Diseña Cards de Bootstrap para mostrar cada película.
-3.  **Configurar Rutas en `app.py`**: 
-    - Usa `render_template('index.html')` en la ruta `/`.
-    - Usa `render_template('catalogo.html', videos=VIDEOS)` en la ruta `/catalogo`.
-
-
----
-
-## 📊 Etapa 4: Modelado de Datos y Persistencia (SQLite)
-*Objetivo: Conectar la aplicación a una base de datos real.*
-
-1.  **Instalar SQLAlchemy**:
-    ```bash
-    pip install flask-sqlalchemy
-    ```
-2.  **Definir Modelos**: Crear la clase `Pelicula` basada en el [Diagrama de Clases](DOCUMENTACION_UML.md).
-3.  **Normalización**: Asegúrate de que las tablas sigan las reglas de la [Guía de BD](DOCUMENTACION_BD.md).
-4.  **Inicializar Base de Datos**: Crear el archivo `.db` desde la consola de Python.
-
----
-
-## 🎬 Etapa 5: Lógica de Negocio y Streaming
-*Objetivo: Reproducción y gestión de catálogo.*
-
-1.  **Página de Detalles**: Crear una ruta que reciba un ID (ej. `/video/<int:id>`).
-2.  **Embed de Video**: Usar la etiqueta `<video>` o `<iframe>` para reproducir contenido.
-3.  **Búsqueda y Filtros**: Implementar el flujo diseñado en el [DFD Nivel 1](DOCUMENTACION_DFD.md).
-
----
-
-## ✅ Etapa 6: Pruebas y Despliegue
-*Objetivo: Verificar que todo funcione.*
-
-1.  **Modo Debug**: Asegurarse de que `app.run(debug=True)` esté activo durante el desarrollo.
-2.  **Requerimientos**: Generar el archivo para que otros puedan instalar tu app:
-    ```bash
-    pip freeze > requirements.txt
-    ```
-
----
-
-### 💡 Tips para los Alumnos:
-- **No saltes etapas**: El desarrollo estructurado evita errores difíciles de rastrear.
-- **Lee los Diagramas**: Si tienes dudas sobre qué atributos poner en una clase, consulta la [Documentación UML](DOCUMENTACION_UML.md).
-- **Consola es tu amiga**: Los errores de Python en la terminal te dirán exactamente qué falta.
-
-[Volver al README principal](README.md)
+**[Volver al README principal](README.md)**

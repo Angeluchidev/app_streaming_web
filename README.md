@@ -156,6 +156,15 @@ classDiagram
 
 ---
 
+## 🚀 Ruta de Aprendizaje para Alumnos
+
+Para desarrollar este proyecto paso a paso en el laboratorio, sigue la guía detallada dividida por etapas:
+
+> [!IMPORTANT]
+> **[👉 IR A LA GUÍA DE LABORATORIO (Paso a Paso)](GUIA_LABORATORIO.md)**
+
+---
+
 ## 🛠️ Fase de Desarrollo e Implementación
 
 Una vez completado el diseño de ingeniería, procedemos a la construcción del software utilizando **Python** y el framework **Flask**.

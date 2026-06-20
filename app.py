@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -48,7 +49,18 @@ class Genero(db.Model):
     nombre = db.Column(db.String(50), nullable=False)
 
 # --- RUTAS ---
+# EXPLICACIÓN ALUMNOS: Decorador para proteger rutas
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'usuario_id' not in session:
+            flash('Por favor, inicia sesión para acceder a la plataforma.', 'warning')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/')
+@login_required
 def index():
     return render_template('index.html')
 
@@ -84,6 +96,7 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route('/catalogo')
+@login_required
 def catalogo():
     # Obtenemos las películas de la base de datos centralizada
     todas_las_peliculas = Pelicula.query.all()

@@ -112,7 +112,25 @@ if __name__ == '__main__':
 
 ---
 
-## 🚀 Etapa 4: Ejecución y Pruebas
+## 🔐 Etapa 4: Sistema de Autenticación (Login)
+*Agregaremos seguridad a la aplicación usando sesiones y cifrado de contraseñas.*
+
+1. **La Sesión (`session`):** 
+   En la web, cada vez que recargas una página el servidor olvida quién eres. Para mantener tu estado de "conectado", usamos `session`. Flask guarda una "cookie" segura en el navegador del usuario. Para que esto sea seguro, necesitamos una llave secreta en `app.py`:
+   ```python
+   app.secret_key = 'clave_super_secreta_educativa'
+   ```
+
+2. **Cifrado de contraseñas (`werkzeug.security`):**
+   Nunca se deben guardar contraseñas en texto plano en la base de datos (por si un hacker la roba). Usamos `generate_password_hash("123456")` para crear un texto ilegible, y `check_password_hash()` para comparar lo que el usuario escribió con el texto ilegible.
+
+3. **Rutas de Login y Logout:**
+   - **`/login`**: Recibe métodos `GET` (para mostrar el formulario) y `POST` (para procesar el email y password).
+   - **`/logout`**: Limpia la sesión usando `session.clear()`.
+
+---
+
+## 🚀 Etapa 5: Ejecución y Pruebas
 1.  Asegúrate de estar dentro del entorno virtual.
 2.  Ejecuta la aplicación:
     ```bash

@@ -12,14 +12,35 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">🎬 StreamFlow</a>
-            <div class="navbar-nav">
+            <div class="navbar-nav me-auto">
                 <a class="nav-link" href="/">Inicio</a>
                 <a class="nav-link" href="/catalogo">Catálogo</a>
+            </div>
+            <!-- EXPLICACIÓN ALUMNOS: Mostrar botones de Login o Logout según el estado de la sesión -->
+            <div class="navbar-nav">
+                {% if session.get('usuario_id') %}
+                    <span class="navbar-text text-light me-3">Hola, {{ session.get('usuario_nombre') }}</span>
+                    <a class="nav-link text-danger fw-bold" href="/logout">Cerrar Sesión</a>
+                {% else %}
+                    <a class="nav-link text-success fw-bold" href="/login">Iniciar Sesión</a>
+                {% endif %}
             </div>
         </div>
     </nav>
 
     <main class="container my-5">
+        <!-- EXPLICACIÓN ALUMNOS: Mostrar mensajes del sistema (Flash Messages) de Flask -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </main>
 

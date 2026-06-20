@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
-from flask import Flask, render_template
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -9,6 +10,7 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'streaming.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'clave_super_secreta_educativa' # NECESARIO PARA LAS SESIONES (Cifra las cookies de sesión)
 
 db = SQLAlchemy(app)
 
@@ -50,6 +52,37 @@ class Genero(db.Model):
 def index():
     return render_template('index.html')
 
+# EXPLICACIÓN ALUMNOS: Ruta de Login (Admite tanto pedir la página GET, como enviar el formulario POST)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Obtenemos los datos que el usuario escribió en el formulario
+        email = request.form['email']
+        password = request.form['password']
+        
+        # Buscamos en la base de datos si existe el usuario por su email
+        usuario = Usuario.query.filter_by(email=email).first()
+        
+        # Validamos si el usuario existe y si la contraseña coincide con su hash
+        if usuario and check_password_hash(usuario.password, password):
+            # Guardamos la sesión (una cookie segura en el navegador del usuario)
+            session['usuario_id'] = usuario.id
+            session['usuario_nombre'] = usuario.nombre
+            flash('¡Inicio de sesión exitoso!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Credenciales incorrectas, intenta de nuevo.', 'danger')
+            
+    return render_template('login.html')
+
+# EXPLICACIÓN ALUMNOS: Ruta para Cerrar Sesión
+@app.route('/logout')
+def logout():
+    # Limpiamos todos los datos que guardamos en la sesión
+    session.clear()
+    flash('Has cerrado sesión correctamente.', 'info')
+    return redirect(url_for('index'))
+
 @app.route('/catalogo')
 def catalogo():
     # Obtenemos las películas de la base de datos centralizada
@@ -77,7 +110,14 @@ def init_db():
         p1.generos.append(g3)
         p2.generos.append(g2)
 
-        db.session.add_all([g1, g2, g3, p1, p2])
+        # 4. Crear Usuario de Prueba (EXPLICACIÓN ALUMNOS: Se cifra la contraseña por seguridad)
+        u1 = Usuario(
+            nombre="Profesor Admin",
+            email="admin@streamflow.com",
+            password=generate_password_hash("123456")
+        )
+
+        db.session.add_all([g1, g2, g3, p1, p2, u1])
         db.session.commit()
         print("Base de datos sincronizada con el ER original.")
 

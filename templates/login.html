@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión - StreamFlow{% endblock %}
+
+{% block content %}
+<!-- EXPLICACIÓN ALUMNOS: Formulario de Login -->
+<!-- Usamos clases de Bootstrap (row, col, card) para centrar el formulario de manera sencilla -->
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card bg-secondary text-white shadow">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-4">Iniciar Sesión</h3>
+                
+                <!-- El atributo 'action' está vacío, por lo que enviará los datos a la misma ruta (/login) -->
+                <!-- El método 'POST' es crucial para no mostrar la contraseña en la URL -->
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <!-- El atributo 'name' es el que se usa en Flask: request.form['email'] -->
+                        <input type="email" class="form-control" id="email" name="email" required placeholder="admin@streamflow.com">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <!-- El tipo 'password' oculta los caracteres tipeados -->
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="123456">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Ingresar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
